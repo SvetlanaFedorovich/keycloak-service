@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-server
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: keycloak
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: keycloak-configuration
+          env:
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-credentials
+                  key: KEYCLOAK_ADMIN_PASSWORD
+          args: [ "start-dev" ]
+
+
+
+
+
