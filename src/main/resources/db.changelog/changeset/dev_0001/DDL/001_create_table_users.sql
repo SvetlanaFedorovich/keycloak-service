@@ -7,7 +7,7 @@ CREATE TABLE users
     role_id   INT          NOT NULL  REFERENCES roles (role_id),
     full_name VARCHAR(20)  NOT NULL,
     password  VARCHAR(256) NOT NULL,
-    date_of_creation DEFAULT CURRENT_TIMESTAMP    NOT NULL
+    date_of_creation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- rollback DROP TABLE users;
