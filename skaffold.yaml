@@ -1,0 +1,16 @@
+apiVersion: skaffold/v4beta8
+kind: Config
+metadata:
+  name: keycloak-service
+build:
+  artifacts:
+    - image: keycloak-service
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - k8s/postgres/*.yaml
+    - k8s/keycloak/*.yaml
+    - k8s/keycloak-service/*.yaml
+
+
