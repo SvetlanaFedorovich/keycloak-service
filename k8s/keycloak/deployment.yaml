@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: keycloak-server
+  name: keycloak-server-deployment
   labels:
-    app: keycloak
+    app: keycloak-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: keycloak
+      app: keycloak-server
   template:
     metadata:
       labels:
-        app: keycloak
+        app: keycloak-server
     spec:
       containers:
-        - name: keycloak
-          image: quay.io/keycloak/keycloak
+        - name: keycloak-server
+          image: quay.io/keycloak/keycloak:23.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: keycloak
@@ -31,6 +31,7 @@ spec:
                   name: keycloak-credentials
                   key: KEYCLOAK_ADMIN_PASSWORD
           args: [ "start-dev" ]
+
 
 
 
