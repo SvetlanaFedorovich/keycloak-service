@@ -1,0 +1,100 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.3'
+    id 'com.google.protobuf' version '0.9.4'
+    id 'java-library'
+//    id 'checkstyle'
+}
+
+ext {
+    versions = [
+            lombok: "1.18.30",
+            liquibase: "4.25.0",
+            keycloak: "23.0.4",
+            openfeign: "4.1.0",
+            grpc: "1.61.1",
+            protobuf: "3.25.3",
+            junit: "5.10.2",
+            testcontainer:"1.19.6",
+            keycloakContainer: "3.2.0",
+            grpcServer: "2.15.0.RELEASE"
+    ]
+}
+
+//checkstyle {
+//    toolVersion '7.8.1'
+//    configFile file("checkstyle.xml")
+//}
+
+group = 'mvp.project'
+version = '1.0.1'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation ("org.springframework.boot:spring-boot-starter-web",
+                    "org.springframework.boot:spring-boot-starter-data-jpa",
+                    "org.springframework.boot:spring-boot-starter-validation",
+                    "org.liquibase:liquibase-core:$versions.liquibase",
+                    "org.springframework.cloud:spring-cloud-starter-openfeign:$versions.openfeign",
+                    "javax.annotation:javax.annotation-api:1.3.2",
+                    "com.google.protobuf:protobuf-java:$versions.protobuf",
+                    "net.devh:grpc-server-spring-boot-starter:$versions.grpcServer",
+                    "net.devh:grpc-server-spring-boot-autoconfigure:$versions.grpcServer")
+
+    runtimeOnly "org.postgresql:postgresql"
+    compileOnly "org.projectlombok:lombok:$versions.lombok"
+    annotationProcessor "org.projectlombok:lombok:$versions.lombok"
+
+    testImplementation ("org.springframework.boot:spring-boot-starter-test",
+            "org.junit.jupiter:junit-jupiter-api:$versions.junit",
+            "org.testcontainers:junit-jupiter:$versions.testcontainer",
+            "com.github.dasniko:testcontainers-keycloak:$versions.keycloakContainer")
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$versions.junit"
+}
+jacocoTestReport {
+    dependsOn test
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "mvp/project/keycloakservice/builder/**",
+                    "mvp/project/keycloakservice/model/**"
+            ])
+        }))
+    }
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:1.61.1"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+                outputSubDir = 'java'
+            }
+        }
+    }
+}

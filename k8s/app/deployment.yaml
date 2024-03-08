@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-app-deployment
+  labels:
+    app: keycloak-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak-service
+  template:
+    metadata:
+      labels:
+        app: keycloak-service
+    spec:
+      containers:
+        - name: keycloak-service
+          image: keycloak-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8082
