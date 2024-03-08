@@ -11,6 +11,4 @@ manifests:
   rawYaml:
     - k8s/postgres/*.yaml
     - k8s/keycloak/*.yaml
-    - k8s/keycloak-service/*.yaml
-
-
+#    - k8s/app/*.yaml
